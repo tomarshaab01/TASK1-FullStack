@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Cart</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+    }
+
+    .navbar {
+      background-color: #333;
+      color: white;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .navbar h1 {
+      font-size: 22px;
+    }
+
+    .navbar a {
+      color: white;
+      text-decoration: none;
+      background-color: #555;
+      padding: 7px 14px;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+
+    .navbar a:hover {
+      background-color: #777;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 20px auto;
+      padding: 0 15px;
+    }
+
+    h2 {
+      font-size: 22px;
+      margin-bottom: 15px;
+      color: #333;
+    }
+
+    .empty-cart {
+      background: white;
+      padding: 40px;
+      text-align: center;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+    }
+
+    .empty-cart p {
+      font-size: 16px;
+      color: #888;
+      margin-bottom: 15px;
+    }
+
+    .empty-cart a {
+      background: #3498db;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 5px;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .cart-layout {
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+
+    .cart-items {
+      flex: 2;
+      min-width: 280px;
+    }
+
+    .cart-item {
+      display: flex;
+      gap: 12px;
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .cart-item img {
+      width: 80px;
+      height: 80px;
+      object-fit: contain;
+      border: 1px solid #eee;
+      border-radius: 4px;
+      padding: 4px;
+      background: #f9f9f9;
+    }
+
+    .item-details {
+      flex: 1;
+      min-width: 140px;
+    }
+
+    .item-title {
+      font-size: 14px;
+      font-weight: bold;
+      margin-bottom: 3px;
+      color: #222;
+    }
+
+    .item-category {
+      font-size: 12px;
+      color: #888;
+      margin-bottom: 3px;
+    }
+
+    .item-unit-price {
+      font-size: 13px;
+      color: #555;
+    }
+
+    .qty-controls {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .qty-controls button {
+      width: 28px;
+      height: 28px;
+      border: 1px solid #ccc;
+      background: #f0f0f0;
+      cursor: pointer;
+      border-radius: 4px;
+      font-size: 16px;
+      line-height: 1;
+    }
+
+    .qty-controls button:hover {
+      background: #ddd;
+    }
+
+    .qty-controls span {
+      font-size: 15px;
+      font-weight: bold;
+      min-width: 24px;
+      text-align: center;
+    }
+
+    .item-total {
+      font-size: 15px;
+      font-weight: bold;
+      color: green;
+      min-width: 70px;
+      text-align: right;
+    }
+
+    .remove-btn {
+      background: none;
+      border: none;
+      color: red;
+      cursor: pointer;
+      font-size: 13px;
+      text-decoration: underline;
+    }
+
+    .bill-summary {
+      flex: 1;
+      min-width: 250px;
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 18px;
+      position: sticky;
+      top: 20px;
+    }
+
+    .bill-summary h3 {
+      font-size: 17px;
+      margin-bottom: 14px;
+      color: #333;
+      border-bottom: 2px solid #3498db;
+      padding-bottom: 8px;
+    }
+
+    .bill-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+      padding: 6px 0;
+      border-bottom: 1px solid #f0f0f0;
+      color: #555;
+    }
+
+    .bill-row.discount {
+      color: green;
+    }
+
+    .bill-row.total {
+      font-size: 16px;
+      font-weight: bold;
+      color: #222;
+      border-top: 2px solid #333;
+      border-bottom: none;
+      margin-top: 6px;
+      padding-top: 10px;
+    }
+
+    .bill-note {
+      font-size: 12px;
+      color: #27ae60;
+      margin-top: 8px;
+      margin-bottom: 12px;
+    }
+
+    .checkout-btn {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      background-color: #e44d26;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 15px;
+      cursor: pointer;
+      margin-top: 12px;
+      text-align: center;
+    }
+
+    .checkout-btn:hover {
+      background-color: #c0392b;
+    }
+
+    .clear-btn {
+      display: block;
+      width: 100%;
+      padding: 9px;
+      background-color: white;
+      color: #e44d26;
+      border: 1px solid #e44d26;
+      border-radius: 5px;
+      font-size: 13px;
+      cursor: pointer;
+      margin-top: 8px;
+      text-align: center;
+    }
+
+    .clear-btn:hover {
+      background-color: #fff0f0;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="navbar">
+    <h1>&#128722; My Cart</h1>
+    <a href="index.html">&#8592; Continue Shopping</a>
+  </div>
+
+  <div class="container">
+    <h2 id="cart-heading">Your Cart</h2>
+    <div id="cart-content"></div>
+  </div>
+
+  <script>
+    var cart = [];
+
+    function loadCart() {
+      var saved = sessionStorage.getItem('my_cart');
+      if (saved) {
+        cart = JSON.parse(saved);
+      }
+    }
+
+    function saveCart() {
+      sessionStorage.setItem('my_cart', JSON.stringify(cart));
+    }
+
+    function increaseQty(id) {
+      for (var i = 0; i < cart.length; i++) {
+        if (cart[i].id == id) {
+          cart[i].qty = cart[i].qty + 1;
+          break;
+        }
+      }
+      saveCart();
+      renderCart();
+    }
+
+    function decreaseQty(id) {
+      for (var i = 0; i < cart.length; i++) {
+        if (cart[i].id == id) {
+          cart[i].qty = cart[i].qty - 1;
+          if (cart[i].qty <= 0) {
+            cart.splice(i, 1);
+          }
+          break;
+        }
+      }
+      saveCart();
+      renderCart();
+    }
+
+    function removeItem(id) {
+      cart = cart.filter(function(item) {
+        return item.id != id;
+      });
+      saveCart();
+      renderCart();
+    }
+
+    function clearCart() {
+      if (confirm('Are you sure you want to clear the cart?')) {
+        cart = [];
+        saveCart();
+        renderCart();
+      }
+    }
+
+    function renderCart() {
+      var contentDiv = document.getElementById('cart-content');
+      var headingEl = document.getElementById('cart-heading');
+
+      if (cart.length === 0) {
+        headingEl.innerText = 'Your Cart (0 items)';
+        contentDiv.innerHTML =
+          '<div class="empty-cart">' +
+            '<p>Your cart is empty! Go add some products.</p>' +
+            '<a href="index.html">Browse Products</a>' +
+          '</div>';
+        return;
+      }
+
+      var subtotal = 0;
+      var totalDiscount = 0;
+      var totalItems = 0;
+
+      for (var i = 0; i < cart.length; i++) {
+        var item = cart[i];
+        subtotal = subtotal + (item.price * item.qty);
+        var discountAmt = (item.price * (item.discountPercentage || 0) / 100) * item.qty;
+        totalDiscount = totalDiscount + discountAmt;
+        totalItems = totalItems + item.qty;
+      }
+
+      var shipping = subtotal > 200 ? 0 : 12.99;
+      var tax = (subtotal - totalDiscount) * 0.08;
+      var grandTotal = subtotal - totalDiscount + shipping + tax;
+
+      headingEl.innerText = 'Your Cart (' + totalItems + ' items)';
+
+      var itemsHTML = '';
+      for (var j = 0; j < cart.length; j++) {
+        var p = cart[j];
+        var lineTotal = (p.price * p.qty).toFixed(2);
+        itemsHTML +=
+          '<div class="cart-item">' +
+            '<img src="' + p.thumbnail + '" alt="' + p.title + '" />' +
+            '<div class="item-details">' +
+              '<div class="item-title">' + p.title + '</div>' +
+              '<div class="item-category">' + p.category + '</div>' +
+              '<div class="item-unit-price">$' + p.price.toFixed(2) + ' each</div>' +
+            '</div>' +
+            '<div class="qty-controls">' +
+              '<button onclick="decreaseQty(' + p.id + ')">-</button>' +
+              '<span>' + p.qty + '</span>' +
+              '<button onclick="increaseQty(' + p.id + ')">+</button>' +
+            '</div>' +
+            '<div class="item-total">$' + lineTotal + '</div>' +
+            '<button class="remove-btn" onclick="removeItem(' + p.id + ')">Remove</button>' +
+          '</div>';
+      }
+
+      var shippingText = shipping === 0 ? 'FREE' : '$' + shipping.toFixed(2);
+      var summaryHTML =
+        '<div class="bill-summary">' +
+          '<h3>Bill Summary</h3>' +
+          '<div class="bill-row"><span>Subtotal (' + totalItems + ' items)</span><span>$' + subtotal.toFixed(2) + '</span></div>' +
+          '<div class="bill-row discount"><span>Discount</span><span>- $' + totalDiscount.toFixed(2) + '</span></div>' +
+          '<div class="bill-row"><span>Shipping</span><span>' + shippingText + '</span></div>' +
+          '<div class="bill-row"><span>Tax (8%)</span><span>$' + tax.toFixed(2) + '</span></div>' +
+          (shipping === 0 ? '<p class="bill-note">&#10003; Free shipping applied!</p>' : '<p class="bill-note">Add more items to get free shipping (over $200)</p>') +
+          '<div class="bill-row total"><span>Total</span><span>$' + grandTotal.toFixed(2) + '</span></div>' +
+          '<button class="checkout-btn" onclick="alert(\'Thank you! Order placed!\'')">Proceed to Checkout</button>' +
+          '<button class="clear-btn" onclick="clearCart()">Clear Cart</button>' +
+        '</div>';
+
+      contentDiv.innerHTML =
+        '<div class="cart-layout">' +
+          '<div class="cart-items">' + itemsHTML + '</div>' +
+          summaryHTML +
+        '</div>';
+    }
+
+    loadCart();
+    renderCart();
+  </script>
+
+</body>
+</html>
