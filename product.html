@@ -291,7 +291,15 @@
       clickedImg.classList.add('selected');
     }
 
+    // only adds to cart, shows alert - used by Add to Cart button
     function addToCart() {
+      if (!product) return;
+      addItemToCart();
+      alert('Added "' + product.title + '" to cart!');
+    }
+
+    // core logic to add item - no alert, used by both buttons
+    function addItemToCart() {
       if (!product) return;
 
       var found = false;
@@ -302,15 +310,16 @@
           break;
         }
       }
+
       if (!found) {
         var item = {
           id: product.id,
           title: product.title,
           price: product.price,
           thumbnail: product.thumbnail,
-          brand: product.brand,
+          brand: product.brand || 'N/A',
           category: product.category,
-          discountPercentage: product.discountPercentage,
+          discountPercentage: product.discountPercentage || 0,
           qty: 1
         };
         cart.push(item);
@@ -318,11 +327,12 @@
 
       saveCart();
       updateCartCount();
-      alert('Added "' + product.title + '" to cart!');
     }
 
+    // Buy Now - saves cart first, then redirects (no alert)
     function goToCart() {
-      addToCart();
+      if (!product) return;
+      addItemToCart();
       window.location.href = 'cart.html';
     }
 
